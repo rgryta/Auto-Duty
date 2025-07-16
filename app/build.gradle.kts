@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.venniktech)
 }
@@ -54,6 +55,15 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.material)
+
+    implementation(libs.bundles.ktor)
+
+    implementation(compose.foundation)
+    implementation(compose.runtime)
+    implementation(compose.material3)
+    implementation(compose.materialIconsExtended)
+    implementation(compose.ui)
+    implementation(compose.components.resources)
 }
