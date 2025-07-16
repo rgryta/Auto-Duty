@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +8,14 @@ plugins {
     alias(libs.plugins.venniktech)
 }
 
+val versions = Properties()
+file("version.properties").inputStream().use { stream ->
+    versions.load(stream)
+}
+
+group = "eu.gryta"
+val projectName: String = "autoduty"
+
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_21
@@ -14,15 +23,15 @@ kotlin {
 }
 
 android {
-    namespace = "eu.gryta.autoduty"
-    compileSdk = 36
+    namespace = "$group.$projectName"
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "eu.gryta.autoduty"
-        minSdk = 30
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "$group.$projectName"
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = versions.getProperty("versionCode").toInt()
+        versionName = versions.getProperty("versionName")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,12 +52,8 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
