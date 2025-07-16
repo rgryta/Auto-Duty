@@ -27,5 +27,4 @@ replay_pid*
 .gradle/
 .idea/
 build/
-app/build/
 gpr.properties
