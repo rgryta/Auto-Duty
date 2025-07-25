@@ -26,7 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import eu.gryta.autoduty.pagerduty.PDClient
 import eu.gryta.autoduty.theme.AppTheme
+import eu.gryta.ktor.utils.ApiInstance
+import io.ktor.client.call.body
+import io.ktor.client.statement.request
+import io.ktor.http.HttpHeaders
+import io.ktor.client.request.headers
 import io.ktor.http.isSuccess
+import io.ktor.utils.io.InternalAPI
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -72,11 +78,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(InternalAPI::class)
     @Composable
     fun AutomationControlView() {
+        val apiToken = remember { mutableStateOf("") }
         val userId = remember { mutableStateOf("") }
-        val username = remember { mutableStateOf("") }
         val automationCounter = remember { mutableStateOf(0) }
+        val coroutineScope = rememberCoroutineScope()
 
         Column(
             modifier = Modifier
@@ -85,16 +93,14 @@ class MainActivity : AppCompatActivity() {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             TextField(
-                value = userId.value,
-                onValueChange = { userId.value = it },
-                label = { Text("User ID") },
+                value = apiToken.value,
+                onValueChange = { apiToken.value = it },
+                label = { Text("API Token") },
                 modifier = Modifier.fillMaxWidth()
             )
 
-            TextField(
-                value = username.value,
-                onValueChange = { username.value = it },
-                label = { Text("Username") },
+            Text(
+                text = userId.value,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -104,7 +110,19 @@ class MainActivity : AppCompatActivity() {
             ) {
                 Button(
                     onClick = {
-                        // Logic to change API token
+                        coroutineScope.launch {
+                            val me = PDClient.Users.Me.get {
+                                headers {
+                                    append(HttpHeaders.Authorization,  "Token token=${apiToken.value}")
+                                }
+                            }
+                            if (me.status.isSuccess()){
+                                userId.value = me.body().user.id
+                            }
+                            else {
+                                println(me.response.request.headers)
+                            }
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {
@@ -113,8 +131,20 @@ class MainActivity : AppCompatActivity() {
 
                 Button(
                     onClick = {
-                        // Logic to start the service
                         automationCounter.value += 1
+                        coroutineScope.launch {
+                            ApiInstance.getInstance().token = "Token token=${apiToken.value}"
+                            val incidents = PDClient.Incidents.get(userId.value)
+                            if (incidents.status.isSuccess()){
+                                println(incidents.body())
+                                println(incidents.response.request.url)
+                            } else {
+                                println("Failed incidents")
+                                println(incidents.status)
+                                println(incidents.response.request.url)
+                                println(incidents.response.request.headers)
+                            }
+                        }
                     },
                     modifier = Modifier.weight(1f)
                 ) {

@@ -18,7 +18,7 @@ class App : Application(), CoroutineScope {
     init {
         instance = this
         launch(this.coroutineContext) {
-            ApiInstance.getInstance().token = ""
+            ApiInstance.getInstance().token = null
         }
     }
 
