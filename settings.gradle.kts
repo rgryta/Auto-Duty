@@ -1,6 +1,9 @@
 import java.io.FileInputStream
 import java.util.Properties
 
+include(":db")
+
+
 pluginManagement {
     repositories {
         google {
@@ -52,5 +55,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Auto Duty"
-include(":app")
+include(":app", ":db")
  

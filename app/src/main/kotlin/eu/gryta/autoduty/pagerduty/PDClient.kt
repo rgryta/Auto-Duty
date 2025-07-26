@@ -7,7 +7,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.http.HeadersBuilder
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -20,7 +20,7 @@ fun HttpClientConfig<*>.addLogging() {
 
 object PDClient {
     private const val URL = "https://api.pagerduty.com"
-    val client = HttpClient {
+    private val client = HttpClient {
         addLogging()
         install(ContentNegotiation) {
             json(Json {
@@ -33,11 +33,14 @@ object PDClient {
 
     object Incidents {
         private const val URL = "${PDClient.URL}/incidents"
+        val endpoint = Endpoint(client = client, url = URL)
 
-        private val endpoint = Endpoint(client = client, url = URL)
-
-        suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<eu.gryta.autoduty.pagerduty.Incidents> {
-            return endpoint.get { headers() }
+        suspend fun get(userId: String): ResponseWrapper<eu.gryta.autoduty.pagerduty.Incidents> {
+            return endpoint.get {
+                url {
+                    parameters.append("user_ids[]", userId)
+                }
+            }
         }
     }
 
@@ -49,8 +52,10 @@ object PDClient {
 
             private val endpoint = Endpoint(client = client, url = URL)
 
-            suspend fun get(headers: HeadersBuilder.() -> Unit = { }): ResponseWrapper<eu.gryta.autoduty.pagerduty.Me> {
-                return endpoint.get { headers() }
+            suspend fun get(block: HttpRequestBuilder.() -> Unit = { }): ResponseWrapper<eu.gryta.autoduty.pagerduty.User> {
+                return endpoint.get {
+                    block()
+                }
             }
         }
     }

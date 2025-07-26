@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.serialization)
     alias(libs.plugins.venniktech)
 }
 
@@ -53,10 +54,13 @@ android {
 }
 
 dependencies {
+    implementation(project(":db"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.serialization.core)
+    implementation(libs.serialization.json)
 
     implementation(libs.bundles.ktor)
 

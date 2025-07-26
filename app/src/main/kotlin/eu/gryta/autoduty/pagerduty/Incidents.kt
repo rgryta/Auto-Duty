@@ -8,5 +8,5 @@ data class Incidents(
     val limit: Int,
     val more: Boolean,
     val total: Int? = null,
-    val incidents: List<Any>
+    val incidents: List<Incident>
 )
