@@ -1,6 +1,5 @@
 package eu.gryta.autoduty.pagerduty
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable

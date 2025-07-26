@@ -4,14 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 enum class Status {
-    @SerialName("triggered") TRIGGERED,
-    @SerialName("acknowledged") ACKNOWLEDGED,
-    @SerialName("resolved") RESOLVED,
+    @SerialName("triggered")
+    TRIGGERED,
+    @SerialName("acknowledged")
+    ACKNOWLEDGED,
+    @SerialName("resolved")
+    RESOLVED,
 }
 
 enum class Urgency {
-    @SerialName("high") HIGH,
-    @SerialName("low") LOW
+    @SerialName("high")
+    HIGH,
+    @SerialName("low")
+    LOW
 }
 
 @Serializable

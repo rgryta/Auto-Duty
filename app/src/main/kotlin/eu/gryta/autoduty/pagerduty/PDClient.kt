@@ -1,6 +1,6 @@
 package eu.gryta.autoduty.pagerduty
 
-import eu.gryta.autoduty.Endpoint
+import eu.gryta.ktor.utils.Endpoint
 import eu.gryta.ktor.utils.ResponseWrapper
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -8,9 +8,6 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.http.HeadersBuilder
-import io.ktor.http.headers
-import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
@@ -41,8 +38,8 @@ object PDClient {
         suspend fun get(userId: String): ResponseWrapper<eu.gryta.autoduty.pagerduty.Incidents> {
             return endpoint.get {
                 url {
-                        parameters.append("user_ids[]", userId)
-                    }
+                    parameters.append("user_ids[]", userId)
+                }
             }
         }
     }
